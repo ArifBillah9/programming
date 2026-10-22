@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>আয়সার HTML শেখা</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@500&family=Dancing+Script:wght@700&family=League+Spartan:wght@400;700;800&display=swap" rel="stylesheet">
+<style>
+@font-face { font-family: "Anek Bangla"; font-style: normal; font-weight: 400; font-display: swap; src: url("fonts/AnekBangla-400.ttf") format("truetype"); }
+@font-face { font-family: "Anek Bangla"; font-style: normal; font-weight: 700; font-display: swap; src: url("fonts/AnekBangla-700.ttf") format("truetype"); }
+@font-face { font-family: "Anek Bangla"; font-style: normal; font-weight: 800; font-display: swap; src: url("fonts/AnekBangla-800.ttf") format("truetype"); }
+  :root {
+    --ink: #0f2e3d;
+    --ink-deep: #0a2130;
+    --text: #f4f7f2;
+    --coral: #ff6b8b;
+    --sun: #ffc857;
+    --mist: #7fb7c4;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body { height: 100%; }
+
+  body {
+    min-height: 100%;
+    display: grid;
+    place-items: center;
+    padding: 24px;
+    background:
+      radial-gradient(60% 50% at 20% 15%, rgba(127, 183, 196, .18), transparent 70%),
+      radial-gradient(50% 45% at 85% 90%, rgba(255, 107, 139, .16), transparent 70%),
+      var(--ink);
+    color: var(--text);
+    font-family: "Anek Bangla", "Noto Sans Bengali", "Hind Siliguri", "Kalpurush", sans-serif;
+    overflow-x: hidden;
+  }
+
+  .hero {
+    width: 100%;
+    max-width: 1000px;
+    text-align: center;
+  }
+
+  h1 {
+    font-weight: 800;
+    line-height: 1.45;
+    letter-spacing: 0;
+  }
+
+  .line {
+    display: block;
+    font-size: clamp(1.9rem, 6.2vw, 4.4rem);
+  }
+
+  .line.small {
+    font-size: clamp(1.4rem, 4.2vw, 3rem);
+    font-weight: 700;
+    color: var(--mist);
+  }
+
+  /* each word sits in a mask and rises into view */
+  .w {
+    display: inline-block;
+    overflow: hidden;
+    vertical-align: bottom;
+    padding: 0 .08em;
+  }
+
+  .w > span {
+    display: inline-block;
+    transform: translateY(110%);
+    animation: rise .9s cubic-bezier(.2, .9, .25, 1) forwards;
+    animation-delay: calc(var(--i) * .22s + .3s);
+  }
+
+  @keyframes rise {
+    to { transform: translateY(0); }
+  }
+
+  /* name gets a hand-drawn underline */
+  .name > span { position: relative; }
+  .name::after {
+    content: "";
+    display: block;
+    height: .09em;
+    margin: -.18em .08em 0;
+    background: var(--sun);
+    border-radius: 99px;
+    transform: scaleX(0);
+    transform-origin: left;
+    animation: draw .8s ease-out forwards;
+    animation-delay: 1.3s;
+  }
+
+  @keyframes draw {
+    to { transform: scaleX(1); }
+  }
+
+  /* HTML is written as a tag: the brackets slide in and close around it */
+  .tag {
+    font-family: "Fira Code", ui-monospace, Consolas, monospace;
+    font-weight: 500;
+    color: var(--coral);
+    overflow: visible;
+  }
+
+  .tag > span { position: relative; }
+
+  .tag > span::before,
+  .tag > span::after {
+    color: var(--sun);
+    opacity: 0;
+    animation: bracket .7s ease-out forwards;
+    animation-delay: 2.2s;
+  }
+
+  .tag > span::before { content: "<"; margin-right: .08em; --from: 24px; }
+  .tag > span::after  { content: "/>"; margin-left: .08em; --from: -24px; }
+
+  @keyframes bracket {
+    from { opacity: 0; transform: translateX(var(--from)); }
+    to   { opacity: 1; transform: translateX(0); }
+  }
+
+  .caret {
+    display: inline-block;
+    width: .09em;
+    height: .95em;
+    margin-left: .12em;
+    vertical-align: -.1em;
+    background: var(--sun);
+    opacity: 0;
+    animation: blink 1.1s steps(1) infinite;
+    animation-delay: 2.8s;
+  }
+
+  @keyframes blink {
+    0%, 49%   { opacity: 1; }
+    50%, 100% { opacity: 0; }
+  }
+
+  /* teacher credit: label fades in, then the name is written out like a signature */
+  .teacher {
+    margin-top: clamp(24px, 5vw, 48px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .teacher-label {
+    font-family: "Fira Code", ui-monospace, Consolas, monospace;
+    font-weight: 500;
+    font-size: clamp(1rem, 2.6vw, 1.4rem);
+    color: var(--mist);
+    opacity: 0;
+    animation: settle .8s ease-out forwards;
+    animation-delay: 3s;
+  }
+
+  .teacher-name {
+    font-family: "Dancing Script", "Brush Script MT", cursive;
+    font-weight: 700;
+    font-size: clamp(2.8rem, 10vw, 6rem);
+    line-height: 1.25;
+    color: var(--sun);
+    padding: 0 .15em .1em;
+    clip-path: inset(-10% 100% -10% 0);
+    animation: wipe 1.5s cubic-bezier(.5, 0, .2, 1) forwards;
+    animation-delay: 3.3s;
+  }
+
+  @keyframes settle {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes wipe {
+    to { clip-path: inset(-10% -5% -10% 0); }
+  }
+
+  /* clickable name */
+  .name-btn { all: unset; cursor: pointer; color: inherit; font: inherit; border-radius: 8px; transition: color .25s; }
+  .name-btn:hover, .name-btn:focus-visible { color: var(--sun); }
+  .name-btn:focus-visible { outline: 3px solid var(--coral); outline-offset: 4px; }
+
+  .hint {
+    position: fixed; left: 0; right: 0; bottom: 18px; padding: 0 16px;
+    text-align: center; color: var(--mist); font-size: clamp(.9rem, 2.2vw, 1.05rem);
+    opacity: 0; pointer-events: none;
+    animation: settle .9s ease-out forwards; animation-delay: 4.8s;
+  }
+
+  /* coming back to the home page: show the finished intro straight away */
+  .hero.again .w > span { animation: none; transform: none; }
+  .hero.again .name::after { animation: none; transform: scaleX(1); }
+  .hero.again .tag > span::before, .hero.again .tag > span::after { animation: none; opacity: 1; transform: none; }
+  .hero.again .caret { animation-delay: 0s; }
+  .hero.again .teacher-label { animation: none; opacity: 1; transform: none; }
+  .hero.again .teacher-name { animation: none; clip-path: none; }
+
+  /* life-story sub-page */
+  [hidden] { display: none !important; }
+  body[data-view="life"] { height: auto; place-items: start center; padding: 28px 20px 56px; }
+  body[data-view="life"] .hint { display: none; }
+
+  html:has(body[data-view="life"]) { background: #1d1d1d; }
+  body[data-view="life"] {
+    min-height: 100vh;
+    background:
+      radial-gradient(55% 40% at 50% 30%, rgba(255,255,255,.10), transparent 70%),
+      linear-gradient(180deg, #4a4a4a 0%, #2b2b2b 55%, #1d1d1d 100%);
+  }
+  .life {
+    --g: #7dff6b; --glass: rgba(18,18,18,.62); --line: rgba(255,255,255,.14); --soft: #c9c9c9;
+    position: relative; width: 100%; max-width: 980px; text-align: left; color: #f2f2f2;
+    font-family: "Anek Bangla", "Noto Sans Bengali", "Hind Siliguri", "Kalpurush", sans-serif;
+    animation: viewIn .7s cubic-bezier(.2,.9,.25,1) both;
+  }
+  @keyframes viewIn { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: none; } }
+  .back {
+    display: inline-flex; align-items: center; gap: .5em; padding: .4em 1.1em; position: relative; z-index: 2;
+    color: #eee; text-decoration: none; font-weight: 700; background: var(--glass);
+    border: 1px solid var(--line); border-radius: 99px; backdrop-filter: blur(8px); transition: background .25s, color .25s;
+  }
+  .back:hover { background: var(--g); color: #111; }
+  .back:focus-visible { outline: 3px solid var(--g); outline-offset: 3px; }
+
+  .poster-head { position: relative; margin: 26px 0 30px; outline: none; }
+  .poster-head .big {
+    font-weight: 800; line-height: .95; letter-spacing: -.01em; text-transform: uppercase;
+    font-size: clamp(3.2rem, 13vw, 8.5rem); color: rgba(255,255,255,.16);
+  }
+  .poster-head .role { margin-top: 10px; font-size: clamp(1rem, 2.8vw, 1.45rem); font-weight: 800; color: #9a9a9a; letter-spacing: .04em; }
+  .poster-head .vert {
+    position: absolute; right: 0; top: 4px; writing-mode: vertical-rl; font-family: "League Spartan", sans-serif;
+    font-weight: 800; letter-spacing: .2em; color: rgba(255,255,255,.22); font-size: .95rem;
+  }
+  .badge {
+    position: absolute; right: 14%; top: 58%; width: 120px; height: 120px; display: grid; place-items: center;
+  }
+  .badge svg { position: absolute; inset: 0; width: 100%; height: 100%; animation: spin 16s linear infinite; }
+  .badge text { fill: #fff; font-size: 11px; letter-spacing: 2px; font-family: "League Spartan", sans-serif; font-weight: 700; }
+  .badge b { font-size: 2.6rem; color: var(--g); font-family: "Dancing Script", cursive; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .grid { display: grid; grid-template-columns: 1fr 1.25fr; gap: 22px; align-items: start; }
+  .col { display: grid; gap: 22px; }
+  .card {
+    background: var(--glass); border: 1px solid var(--line); border-radius: 14px; padding: 24px 24px 22px;
+    box-shadow: 0 20px 40px -18px rgba(0,0,0,.7), inset 0 1px 0 rgba(255,255,255,.08);
+    backdrop-filter: blur(10px); animation: rowIn .6s cubic-bezier(.2,.9,.25,1) both; animation-delay: calc(var(--r,0) * .1s + .3s);
+  }
+  @keyframes rowIn { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: none; } }
+  .card h2 { font-size: 1.35rem; font-weight: 800; letter-spacing: .02em; margin-bottom: 14px; }
+  .card h2 em { font-style: normal; color: var(--g); }
+  .stats p { font-size: 1.05rem; line-height: 1.6; color: var(--soft); }
+  .stats strong { color: var(--g); font-weight: 800; }
+  .about { margin-top: 14px; color: var(--soft); line-height: 1.75; }
+  .facts { list-style: none; display: grid; gap: 10px; }
+  .facts li { display: grid; grid-template-columns: 7.5em 1fr; gap: 10px; line-height: 1.55; padding-bottom: 10px; border-bottom: 1px dashed var(--line); }
+  .facts li:last-child { border: 0; padding: 0; }
+  .facts span { color: var(--g); font-weight: 700; font-size: .95rem; }
+  .skills { text-align: right; }
+  .skills h3 { color: var(--g); font-size: 1.05rem; margin-bottom: 8px; }
+  .skills li { list-style: none; color: #bdbdbd; font-size: .95rem; line-height: 1.6; }
+  .journey .step { padding: 12px 0; border-bottom: 1px solid var(--line); }
+  .journey .step:last-child { border: 0; }
+  .journey h4 { font-size: 1rem; font-weight: 800; letter-spacing: .03em; text-transform: uppercase; }
+  .journey .step:first-of-type h4 { color: var(--g); }
+  .journey .when { display: inline-block; font-size: .8rem; color: #9b9b9b; margin: 2px 0 4px; }
+  .journey p { color: var(--soft); line-height: 1.65; font-size: .97rem; }
+  .contact { list-style: none; display: grid; gap: 8px; color: #ddd; }
+  .contact li { display: flex; gap: 10px; align-items: center; }
+  .contact i { font-style: normal; width: 22px; height: 22px; border-radius: 5px; background: #fff; color: #111; display: grid; place-items: center; font-size: .75rem; }
+  .voice {
+    margin-top: 24px; padding: 22px 24px; border: 1px solid var(--line);
+    border-left: 3px solid var(--g); border-radius: 8px; background: var(--glass);
+    animation: rowIn .8s cubic-bezier(.2,.9,.25,1) both;
+  }
+  .voice-head { display: flex; align-items: center; gap: 16px; margin-bottom: 16px; }
+  .voice-mark { flex: 0 0 48px; width: 48px; height: 48px; display: grid; place-items: center;
+    border: 1px solid var(--line); border-radius: 50%; color: var(--g); }
+  .voice-mark svg { width: 24px; height: 24px; }
+  .voice h2 { font-size: 1.35rem; font-weight: 800; line-height: 1.5; }
+  .voice p { font-size: .95rem; color: var(--soft); line-height: 1.6; }
+  .voice audio { display: block; width: 100%; height: 54px; color-scheme: dark; border-radius: 8px; }
+  .voice audio:focus-visible { outline: 2px solid var(--g); outline-offset: 4px; }
+  .sound-bars { margin-left: auto; flex: 0 0 56px; height: 32px; display: flex; gap: 4px; align-items: center; }
+  .sound-bars span { width: 4px; height: 8px; background: var(--g); border-radius: 2px;
+    animation: sound 1s ease-in-out infinite alternate; animation-play-state: paused; }
+  .sound-bars span:nth-child(2n) { height: 20px; animation-delay: -.4s; }
+  .sound-bars span:nth-child(3n) { height: 30px; animation-delay: -.7s; }
+  .voice.is-playing .sound-bars span { animation-play-state: running; }
+  @keyframes sound { from { transform: scaleY(.35); } to { transform: scaleY(1); } }
+  .life .card { transition: border-color .3s, box-shadow .3s; }
+  .life .card:hover { border-color: var(--g); }
+  .journey .step { transition: opacity .65s ease, transform .65s ease; }
+  .journey .step.waiting { opacity: 0; transform: translateY(18px); }
+  .poster-head .big { animation: viewIn .9s ease both; letter-spacing: 0; }
+  .poster-head .role { animation: viewIn .9s .15s ease both; }
+  .contact { animation: rowIn .8s .4s ease both; }
+  @media (max-width: 480px) {
+    .voice { padding: 18px 14px; }
+    .voice-head { gap: 10px; }
+    .sound-bars { flex-basis: 32px; gap: 3px; }
+    .sound-bars span:nth-child(n+5) { display: none; }
+    .voice h2 { font-size: 1.15rem; }
+  }
+
+  @media (max-width: 760px) {
+    .grid { grid-template-columns: 1fr; }
+    .badge { position: relative; right: auto; top: auto; margin: 16px 0 0 auto; width: 100px; height: 100px; }
+    .poster-head .vert { display: none; }
+    .skills { text-align: left; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .w > span,
+    .name::after,
+    .tag > span::before,
+    .tag > span::after,
+    .teacher-label {
+      animation: none;
+      transform: none;
+      opacity: 1;
+    }
+    .teacher-name {
+      animation: none;
+      clip-path: none;
+    }
+    .caret { animation: none; opacity: 1; }
+    .hint, .life, .life .card, .badge svg, .voice, .sound-bars span,
+    .poster-head .big, .poster-head .role, .contact { animation: none; opacity: 1; transform: none; }
+    .journey .step, .journey .step.waiting { transition: none; opacity: 1; transform: none; }
+  }
+
+  /* Local Bengali fonts and mobile-friendly biography */
+  .life { --player-surface: #202622; --player-track: #465049; --player-ink: #122014;
+    --name-ink: #d0d6d0; --muted-ink: #a9b4ac; --player-shadow: 0 12px 30px rgba(0,0,0,.22);
+    --bn-font: "Anek Bangla", "Noto Sans Bengali", "Hind Siliguri", "Kalpurush", sans-serif; }
+  .life, .life button, .life select, .life input { font-family: var(--bn-font); letter-spacing: 0; }
+  .life h1, .life h2, .life h3, .life h4 { letter-spacing: 0; }
+  .poster-head .big { font-size: 88px; line-height: 1.22; color: var(--name-ink); }
+  .poster-head .role { font-size: 22px; line-height: 1.6; color: var(--soft); letter-spacing: 0; }
+  .badge { top: 38%; right: 12%; overflow: hidden; }
+  .grid { grid-template-columns: minmax(0,1fr) minmax(0,1.25fr); }
+  .col, .card, .facts li { min-width: 0; }
+  .card { border-radius: 8px; }
+  .facts li { grid-template-columns: 64px minmax(0,1fr); line-height: 1.8; }
+  .journey p { font-size: 17px; line-height: 1.85; }
+  .journey h4 { font-size: 19px; line-height: 1.65; }
+  .journey .when { font-size: 14px; }
+  .contact li { overflow-wrap: anywhere; line-height: 1.8; }
+  .contact i { flex-shrink: 0; }
+  .voice { background: var(--player-surface); box-shadow: var(--player-shadow); padding: 24px; }
+  .voice-head { margin-bottom: 18px; }
+  .voice-head > div:nth-child(2) { min-width: 0; }
+  .voice h2 { font-size: 22px; }
+  .voice p { font-size: 17px; }
+  .player { display: grid; gap: 16px; }
+  .player-main { display: flex; align-items: center; gap: 16px; }
+  .player-play, .player-tool { display: grid; place-items: center; cursor: pointer; flex-shrink: 0; }
+  .player-play { width: 56px; height: 56px; border: 0; border-radius: 50%; background: var(--g); color: var(--player-ink); }
+  .player-play svg { width: 25px; height: 25px; }
+  .player-play:hover { opacity: .85; }
+  .player-play:disabled { opacity: .45; cursor: wait; }
+  .player-tool { width: 40px; height: 40px; border: 1px solid var(--line); border-radius: 50%; color: var(--soft); background: transparent; }
+  .player-tool:hover { color: var(--g); border-color: var(--g); }
+  .player-tool svg { width: 20px; height: 20px; }
+  .player-seek { flex: 1; min-width: 0; }
+  .player-times { display: flex; justify-content: space-between; gap: 8px; color: var(--muted-ink); font: 13px/1.6 "Fira Code", monospace; font-variant-numeric: tabular-nums; }
+  .player input[type=range] { width: 100%; height: 26px; display: block; cursor: pointer; accent-color: var(--g); background: transparent; }
+  .player input[type=range]::-webkit-slider-runnable-track { height: 5px; border-radius: 4px; background: var(--player-track); }
+  .player input[type=range]::-webkit-slider-thumb { margin-top: -5px; }
+  .player-actions { display: flex; align-items: center; justify-content: space-between; gap: 12px; border-top: 1px solid var(--line); padding-top: 12px; }
+  .player-tools { display: flex; align-items: center; gap: 8px; }
+  .player select { height: 40px; padding: 0 8px; border: 1px solid var(--line); border-radius: 6px; background: var(--player-surface); color: var(--soft); font-size: 16px; cursor: pointer; }
+  .player :is(button,input,select,a):focus-visible { outline: 2px solid var(--g); outline-offset: 3px; }
+  .player-status { font-size: 15px; color: var(--muted-ink); line-height: 1.6; }
+  .player-error { font-size: 16px; color: var(--soft); }
+  .player-error a { color: var(--g); }
+  .voice.custom-ready audio { display: none; }
+  .journey .step { padding: 18px 0 18px 20px; position: relative; }
+  .journey .step:before { content: ""; position: absolute; left: 0; top: 29px; width: 6px; height: 6px; border-radius: 50%; background: var(--g); }
+  @media (max-width: 760px) {
+    body[data-view="life"] { padding: 18px 16px 36px; }
+    .grid { grid-template-columns: minmax(0,1fr); gap: 18px; }
+    .col { gap: 18px; }
+    .card { padding: 22px 20px; }
+    .poster-head { display: grid; grid-template-columns: minmax(0,1fr) 80px; align-items: center; gap: 10px; margin: 24px 0; }
+    .poster-head .big { font-size: 56px; line-height: 1.25; }
+    .poster-head .role { font-size: 18px; grid-row: 2; grid-column: 1/-1; margin: 0; }
+    .badge { position: relative; width: 80px; height: 80px; right: auto; top: auto; margin: 0; grid-column: 2; grid-row: 1; }
+    .badge b { font-size: 32px; }
+    .voice { margin-top: 20px; padding: 20px 16px; }
+    .voice-head { gap: 12px; }
+    .voice-mark { width: 40px; height: 40px; flex-basis: 40px; }
+    .voice h2 { font-size: 20px; }
+    .sound-bars { flex-basis: 28px; gap: 3px; }
+    .sound-bars span:nth-child(n+5) { display: none; }
+    .card h2 { font-size: 24px; line-height: 1.5; }
+    .stats p, .about, .facts { font-size: 17px; line-height: 1.85; }
+    .facts span { font-size: 17px; }
+    .skills h3 { font-size: 21px; }
+    .skills li { font-size: 17px; line-height: 1.8; }
+  }
+  @media (max-width: 360px) {
+    body[data-view="life"] { padding-right: 12px; padding-left: 12px; }
+    .poster-head .big { font-size: 46px; }
+    .poster-head { grid-template-columns: minmax(0,1fr) 64px; }
+    .badge { width: 64px; height: 64px; }
+    .card { padding: 20px 16px; }
+    .voice h2 { font-size: 18px; }
+    .sound-bars { display: none; }
+    .player-main { gap: 12px; }
+    .player-play { width: 48px; height: 48px; }
+    .player-tools { gap: 6px; }
+    .player-tool { width: 36px; height: 36px; }
+    .player-status { font-size: 14px; }
+  }
+</style>
+</head>
+<body>
+  <main class="hero" id="home">
+    <h1 aria-label="আমি আয়সা প্রোগ্রামিং ল্যাংগুয়েজ থেকে HTML ল্যাংগুয়েজ শিখছি">
+      <span class="line" aria-hidden="true">
+        <span class="w" style="--i:0"><span>আমি</span></span>
+        <span class="w name" style="--i:1"><span><button type="button" class="name-btn" id="nameBtn" aria-haspopup="dialog">আয়সা</button></span></span>
+      </span>
+      <span class="line small" aria-hidden="true">
+        <span class="w" style="--i:2"><span>প্রোগ্রামিং</span></span>
+        <span class="w" style="--i:3"><span>ল্যাংগুয়েজ</span></span>
+        <span class="w" style="--i:4"><span>থেকে</span></span>
+      </span>
+      <span class="line" aria-hidden="true">
+        <span class="w tag" style="--i:5"><span>HTML</span></span>
+        <span class="w" style="--i:6"><span>ল্যাংগুয়েজ</span></span>
+        <span class="w" style="--i:7"><span>শিখছি</span></span><span class="caret"></span>
+      </span>
+    </h1>
+    <div class="teacher" lang="en">
+      <span class="teacher-label">Teacher</span>
+      <span class="teacher-name">Arif Billah</span>
+    </div>
+  </main>
+  <p class="hint">“আয়সা” লেখাটিতে ক্লিক করে জীবনের গল্প দেখুন</p>
+
+  <article class="life" id="life" hidden>
+    <a class="back" href="#home">← হোম</a>
+    <section class="voice" aria-labelledby="voiceTitle">
+      <div class="voice-head">
+        <div class="voice-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 10v2a7 7 0 0 0 14 0v-2M12 19v3M8 22h8"/></svg></div>
+        <div><h2 id="voiceTitle">জীবনের গল্প · অডিও</h2><p>আয়সা সিদ্দিকা</p></div>
+        <div class="sound-bars" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+      </div>
+      <audio id="lifeAudio" controls preload="metadata" aria-label="জীবনের গল্পের অডিও">
+        <source src="audio/biography.mpeg" type="audio/mpeg">
+        <a href="audio/biography.mpeg">অডিও ডাউনলোড করুন</a>
+      </audio>
+      <div class="player" id="customPlayer" hidden>
+        <div class="player-main">
+          <button class="player-play" id="playAudio" type="button" aria-label="অডিও চালান" title="অডিও চালান" disabled>
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path id="playIcon" d="M8 5v14l11-7z"/></svg>
+          </button>
+          <div class="player-seek">
+            <input id="audioSeek" type="range" min="0" max="100" value="0" step="0.1" aria-label="অডিওর সময়" disabled>
+            <div class="player-times"><span id="elapsed">0:00</span><span id="duration">—:—</span></div>
+          </div>
+        </div>
+        <div class="player-actions">
+          <span class="player-status" id="audioStatus" role="status">অডিও লোড হচ্ছে…</span>
+          <div class="player-tools">
+            <button class="player-tool" id="rewindAudio" type="button" title="১০ সেকেন্ড পেছনে" aria-label="১০ সেকেন্ড পেছনে"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M8 4H3v5M3 4a9 9 0 1 1-1 10"/><text x="7" y="16" font-size="9" stroke="none" fill="currentColor">10</text></svg></button>
+            <button class="player-tool" id="muteAudio" type="button" title="শব্দ বন্ধ করুন" aria-label="শব্দ বন্ধ করুন" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M11 4 6 8H3v8h3l5 4zM15 8a6 6 0 0 1 0 8M18 5a10 10 0 0 1 0 14"/></svg></button>
+            <select id="audioSpeed" aria-label="অডিওর গতি" title="অডিওর গতি"><option value="0.75">0.75×</option><option value="1" selected>1×</option><option value="1.25">1.25×</option><option value="1.5">1.5×</option><option value="2">2×</option></select>
+          </div>
+        </div>
+        <p class="player-error" id="audioError" hidden>অডিওটি চালানো যাচ্ছে না। <a href="audio/biography.mpeg" download>অডিও ডাউনলোড করুন</a></p>
+      </div>
+    </section>
+    <header class="poster-head" id="lifeTop" tabindex="-1">
+      <h1 class="big">আয়সা<br>সিদ্দিকা</h1>
+      <p class="role">আলেমা · শিক্ষার্থী ওয়েব ডেভেলপার</p>
+      <span class="vert" lang="en">FROM BOALMARI</span>
+      <div class="badge" aria-hidden="true">
+        <svg viewBox="0 0 120 120"><defs><path id="c" d="M60,60 m-46,0 a46,46 0 1,1 92,0 a46,46 0 1,1 -92,0"/></defs>
+          <text><textPath href="#c">LIFE STORY · AYSA · LIFE STORY ·</textPath></text></svg>
+        <b>A</b>
+      </div>
+    </header>
+
+    <div class="grid">
+      <div class="col">
+        <section class="card stats" style="--r:0">
+          <h2>জীবনের <em>সারকথা</em></h2>
+          <p><strong>২০০৭</strong> সালে জন্ম।</p>
+          <p><strong>১৮</strong> বছরে দাওরায়ে হাদিস।</p>
+          <p><strong>এক</strong> ছোট্ট সন্তানের মা।</p>
+          <p class="about">মাদ্রাসায় দ্বীনি শিক্ষা শেষ করে আলেমা হয়েছি। এখন সংসার ও সন্তানের যত্নের পাশাপাশি স্বামীর হাতে-কলমে শেখানোয় ওয়েব ডেভেলপমেন্ট শিখছি।</p>
+        </section>
+
+        <section class="card" style="--r:1">
+          <h2>পরিচিতি</h2>
+          <ul class="facts">
+            <li><span>নাম</span>আয়সা সিদ্দিকা</li>
+            <li><span>জন্ম</span>৭ এপ্রিল ২০০৭, বোয়ালমারী, ফরিদপুর</li>
+            <li><span>বাবা</span>মোহাম্মদ আক্কাস মোল্লা</li>
+            <li><span>মা</span>মোসাম্মাত কুলসুম</li>
+            <li><span>ভাই</span>ইমরান মোল্লা (বড়), ইমন মোল্লা (ছোট)</li>
+            <li><span>স্বামী</span>মুফতি মোহাম্মদ আরিফ বিল্লাহ কাসেমি — ওয়েব ডেভেলপার ও লেখক</li>
+            <li><span>সন্তান</span>মোহাম্মদ আতনান ইসলাম (জন্ম ১২ আগস্ট ২০২৬, বুধবার, রাত ৮টা)</li>
+          </ul>
+        </section>
+
+        <section class="card skills" style="--r:2">
+          <h3>শিখছি ও পারি</h3>
+          <ul><li>কুরআন ও হাদিস</li><li>দ্বীনি শিক্ষাদান</li><li>HTML</li><li>CSS</li><li>ওয়েবসাইট তৈরি</li><li>সংসার ও পরিবার</li></ul>
+        </section>
+
+        <ul class="contact">
+          <li><i>⌂</i>নবীনগর, সাভার, ঢাকা</li>
+          <li><i>✎</i>শিক্ষক: Arif Billah</li>
+        </ul>
+      </div>
+
+      <section class="card journey" style="--r:1">
+        <h2>জীবনের যাত্রা</h2>
+        <div class="step"><h4>স্বপ্ন</h4><span class="when">ভবিষ্যৎ</span><p>সন্তান দ্বীনি ও নৈতিক শিক্ষায় ভালো মানুষ হোক; ওয়েব ডেভেলপমেন্ট ভালোভাবে শিখে পরিবারকে সময় দেওয়ার পাশাপাশি কাজ করা।</p></div>
+        <div class="step"><h4>ওয়েব ডেভেলপমেন্ট</h4><span class="when">এখন</span><p>স্বামীর উৎসাহ ও হাতে-কলমে শেখানোয় একেবারে প্রাথমিক পর্যায় থেকে কোড লেখা ও ওয়েবসাইট তৈরি শেখা।</p></div>
+        <div class="step"><h4>বর্তমান জীবন</h4><span class="when">এখন</span><p>সংসার, পরিবারের যত্ন ও ছোট্ট সন্তানকে সময় দেওয়ার পাশাপাশি নতুন কিছু শেখার চেষ্টা।</p></div>
+        <div class="step"><h4>মাতৃত্ব</h4><span class="when">২০২৬</span><p>বিয়ের প্রায় ছয় মাস পর গর্ভবতী হন। ১২ আগস্ট ২০২৬ ছেলে মোহাম্মদ আতনান ইসলামের জন্ম।</p></div>
+        <div class="step"><h4>শ্বশুরবাড়ি</h4><span class="when">বিয়ের পর</span><p>শ্বশুর বোরহান বেপারী; শাশুড়ি মোসাম্মাত দিলরুবা খানম (পল্লী চিকিৎসক, নিজস্ব ফার্মেসি)। বড় ভাসুর সানাউল্লাহ বেপারী (প্রবাসী), বড় জা একজন হাফেজা। ছোট দেওর হায়বুল্লাহ বেপারী হাফেজ, তিনিও ওয়েব ডেভেলপমেন্ট শিখছেন।</p></div>
+        <div class="step"><h4>বিয়ে</h4><span class="when">২০২৫</span><p>মুফতি মোহাম্মদ আরিফ বিল্লাহ কাসেমির সঙ্গে বিয়ে; যৌথ পরিবারে নতুন জীবনের শুরু।</p></div>
+        <div class="step"><h4>প্রথম কর্মজীবন</h4><span class="when">দাওরার পর</span><p>মাইমুনা (রা.) মহিলা মাদ্রাসায় প্রায় দুই মাস চাকরি।</p></div>
+        <div class="step"><h4>দ্বীনি শিক্ষা</h4><span class="when">১৮ বছর বয়স</span><p>ঢাকার হযরত উম্মে হাবিবা (রা.) মহিলা মাদ্রাসায় দাওরায়ে হাদিস সম্পন্ন করে আলেমা হন।</p></div>
+        <div class="step"><h4>শৈশব ও পড়াশোনা</h4><span class="when">পঞ্চম শ্রেণি পর্যন্ত</span><p>গ্রামের স্কুলে পড়া। মায়ের সিদ্ধান্তে মাদ্রাসায় ভর্তি; গ্রামের মাদ্রাসায় প্রায় দুই বছর, এরপর ঢাকায়।</p></div>
+        <div class="step"><h4>জন্ম ও পরিবার</h4><span class="when">২০০৭</span><p>দুই ভাইয়ের পর পরিবারের মেয়ে সন্তান হিসেবে জন্ম। শৈশব কেটেছে পরিবারের স্নেহ ও যত্নে।</p></div>
+      </section>
+    </div>
+  </article>
+
+  <script>
+    (function () {
+      var home = document.getElementById('home');
+      var life = document.getElementById('life');
+      var btn = document.getElementById('nameBtn');
+      var seen = false;
+      var audio = document.getElementById('lifeAudio');
+      var voice = document.querySelector('.voice');
+      var player = document.getElementById('customPlayer');
+      var play = document.getElementById('playAudio');
+      var icon = document.getElementById('playIcon');
+      var seek = document.getElementById('audioSeek');
+      var status = document.getElementById('audioStatus');
+      var mute = document.getElementById('muteAudio');
+      function time(value) { if (!isFinite(value)) return '—:—'; return Math.floor(value / 60) + ':' + String(Math.floor(value % 60)).padStart(2, '0'); }
+      function updateTime() {
+        document.getElementById('elapsed').textContent = time(audio.currentTime);
+        document.getElementById('duration').textContent = time(audio.duration);
+        if (isFinite(audio.duration) && audio.duration > 0) {
+          seek.max = audio.duration; seek.value = audio.currentTime; seek.disabled = false; play.disabled = false;
+          seek.setAttribute('aria-valuetext', time(audio.currentTime) + ' / ' + time(audio.duration));
+        }
+      }
+      function updatePlay() {
+        var playing = !audio.paused && !audio.ended;
+        voice.classList.toggle('is-playing', playing);
+        icon.setAttribute('d', playing ? 'M6 5h4v14H6zM14 5h4v14h-4z' : 'M8 5v14l11-7z');
+        play.setAttribute('aria-label', playing ? 'অডিও থামান' : 'অডিও চালান');
+        play.title = play.getAttribute('aria-label');
+        status.textContent = audio.ended ? 'শোনা শেষ' : playing ? 'এখন চলছে' : 'জীবনের গল্প শুনুন';
+      }
+      play.addEventListener('click', function () {
+        if (!audio.paused) { audio.pause(); return; }
+        audio.play().catch(function () { status.textContent = 'আবার চালানোর চেষ্টা করুন'; });
+      });
+      seek.addEventListener('input', function () { if (isFinite(audio.duration)) audio.currentTime = Number(seek.value); updateTime(); });
+      document.getElementById('rewindAudio').addEventListener('click', function () { audio.currentTime = Math.max(0, audio.currentTime - 10); updateTime(); });
+      mute.addEventListener('click', function () {
+        audio.muted = !audio.muted; mute.setAttribute('aria-pressed', String(audio.muted));
+        mute.setAttribute('aria-label', audio.muted ? 'শব্দ চালু করুন' : 'শব্দ বন্ধ করুন');
+        mute.title = mute.getAttribute('aria-label');
+      });
+      document.getElementById('audioSpeed').addEventListener('change', function (event) { audio.playbackRate = Number(event.target.value); });
+      audio.addEventListener('loadedmetadata', function () { updateTime(); updatePlay(); });
+      audio.addEventListener('durationchange', updateTime);
+      audio.addEventListener('timeupdate', updateTime);
+      ['play', 'pause', 'ended'].forEach(function (event) { audio.addEventListener(event, updatePlay); });
+      audio.addEventListener('error', function () { status.textContent = 'অডিও পাওয়া যায়নি'; document.getElementById('audioError').hidden = false; play.disabled = true; });
+      player.hidden = false; voice.classList.add('custom-ready'); updateTime();
+      var steps = document.querySelectorAll('.journey .step');
+      var observer = null;
+      if ('IntersectionObserver' in window && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        observer = new IntersectionObserver(function (entries) {
+          entries.forEach(function (entry) {
+            if (entry.isIntersecting) {
+              entry.target.classList.remove('waiting');
+              observer.unobserve(entry.target);
+            }
+          });
+        }, { threshold: .08 });
+      }
+      function revealJourney() {
+        if (!observer) return;
+        steps.forEach(function (step) {
+          step.classList.add('waiting');
+          observer.observe(step);
+        });
+      }
+      
+
+      function route() {
+        var isLife = location.hash === '#life';
+        document.body.setAttribute('data-view', isLife ? 'life' : 'home');
+        home.hidden = isLife;
+        life.hidden = !isLife;
+        if (isLife) {
+          window.scrollTo(0, 0);
+          document.getElementById('lifeTop').focus({ preventScroll: true });
+          revealJourney();
+        } else {
+          audio.pause();
+          if (seen) home.classList.add('again');
+          seen = true;
+        }
+      }
+
+      btn.addEventListener('click', function () { location.hash = 'life'; });
+      window.addEventListener('hashchange', route);
+      route();
+    })();
+  </script>
+</body>
+</html>
